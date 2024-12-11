@@ -1,0 +1,129 @@
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.form-container {
+	max-width: 800px;
+	margin: 50px auto;
+	padding: 20px;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+	font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+.form-group {
+	margin-bottom: 15px;
+}
+
+label {
+	display: block;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+input[type="email"], input[type="text"], textarea {
+	width: 100%;
+	padding: 10px;
+	font-size: 14px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	resize: none;
+}
+
+textarea {
+	height: 100px;
+}
+
+.checkbox-group {
+	display: flex;
+	align-items: center;
+}
+
+.checkbox-group input {
+	margin-right: 10px;
+}
+
+.file-upload-container {
+	border: 1px solid #ddd;
+	padding: 10px;
+	border-radius: 5px;
+	width: 100%;
+	margin: 0 auto;
+}
+
+.file-list {
+	margin-top: 10px;
+}
+
+.file-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 5px;
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	background-color: #f9f9f9;
+}
+
+.file-item span {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.file-item button {
+	border: none;
+	background-color: #f9f9f9;
+	color: #ff4d4d;
+	padding: 5px;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.file-item button:hover {
+	background-color: #e60000;
+}
+
+.upload-info {
+	margin-top: 10px;
+	color: #666;
+}
+
+.add-file-btn {
+	display: inline-block;
+	margin-top: 10px;
+	padding: 10px 20px;
+	background-color: #f9f9f9;
+	color: #80808075;
+	width: 100%;
+	border: 2px dashed #80808075;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.submit-btn {
+	display: inline-block;
+	padding: 10px 20px;
+	font-size: 16px;
+	font-weight: bold;
+	color: white;
+	background-color: #28a745;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.submit-btn:hover {
+	background-color: #218838;
+}

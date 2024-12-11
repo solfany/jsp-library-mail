@@ -1,27 +1,103 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<link rel="stylesheet" type="text/css" href="resources/css/main.css" />
 
-    <form action="/sendMail" method="post">
-        <div>
-            <label for="email">이메일 주소</label>
-            <input type="email" id="email" name="email" placeholder="example@example.com" required>
-        </div>
-        <div>
-            <label for="message">내용</label>
-            <textarea id="message" name="message" rows="5" cols="30" placeholder="내용을 입력하세요" required></textarea>
-        </div>
-        <button type="submit">발송하기</button>
-    </form>
-    <script>
-        document.querySelector('form').addEventListener('submit', function (e) {
-            const email = document.getElementById('email').value.trim();
-            const message = document.getElementById('message').value.trim();
+<div class="form-container">
+	<h1 class="form-title">메일 작성</h1>
+	<form action="/sendMail" method="post" enctype="multipart/form-data">
+		<div class="form-group">
+			<label for="emailAddress">받는 사람</label> 
+			<input type="email" id="emailAddress" name="emailAddress"
+				placeholder="example@example.com" required>
+		</div>
+		<div class="form-group">
+			<label for="referenceEmailAddress">참조</label> 
+			<input type="text" id="referenceEmailAddress" name="referenceEmailAddress" placeholder="참조할 이메일 주소">
+		</div>
+		<div class="form-group">
+			<label for="emailTitle">제목</label> <input type="text" id="emailTitle"
+				name="emailTitle" placeholder="메일 제목을 입력하세요" required>
+		</div>
+		<div class="form-group">
+			<label for="emailContent">내용</label>
+			<textarea id="emailContent" name="emailContent"
+				placeholder="내용을 입력하세요" required></textarea>
+		</div>
+		<div class="file-upload-container">
+			<label for="file">파일 첨부</label> 
+			<input type="file" id="file" multiple style="display: none;">
+			<button class="add-file-btn" type="button" onclick="addFile()">파일 추가</button>
+			<div class="file-list" id="fileList"></div>
+			<div class="upload-info" id="uploadInfo">0/10 파일 첨부</div>
+		</div>
+		<button type="submit" class="submit-btn">발송하기</button>
+	</form>
+</div>
 
-            if (!email || !message) {
-                e.preventDefault();
-                alert('모든 필드를 채워주세요.');
-            } else if (!/\S+@\S+\.\S+/.test(email)) {
-                e.preventDefault();
-                alert('올바른 이메일 주소를 입력해주세요.');
-            }
-        });
-    </script>
+<script type="text/javascript"
+	src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+const fileInput = document.getElementById('file');
+const fileListContainer = document.getElementById('fileList');
+const uploadInfo = document.getElementById('uploadInfo');
+
+const maxFiles = 10;
+let selectedFiles = [];
+
+// 파일 추가 버튼 클릭 시 파일 선택 창 열기
+function addFile() {
+    fileInput.click(); // 파일 선택 창 열기
+}
+
+// 파일 선택 시 처리
+fileInput.addEventListener('change', function () {
+    const newFiles = Array.from(fileInput.files);
+
+    // 최대 파일 개수 초과 시 경고
+    if (selectedFiles.length + newFiles.length > maxFiles) {
+        alert('최대 10개의 파일만 첨부할 수 있습니다.');
+        fileInput.value = ''; // 선택 취소
+        return;
+    }
+
+    // 새로운 파일 추가
+    newFiles.forEach((file) => {
+        selectedFiles.push(file);
+        displayFile(file);
+    });
+
+    updateUploadInfo();
+    fileInput.value = ''; // 동일 파일 선택 가능하도록 초기화
+});
+
+// 파일 리스트 UI 갱신
+function displayFile(file) {
+    const fileItem = document.createElement('div');
+    fileItem.className = 'file-item';
+
+    const fileName = document.createElement('span');
+    fileName.textContent = file.name;
+
+    const removeButton = document.createElement('button');
+    removeButton.textContent = 'X';
+    removeButton.addEventListener('click', () => {
+        removeFile(file);
+        fileItem.remove();
+        updateUploadInfo();
+    });
+
+    fileItem.appendChild(fileName);
+    fileItem.appendChild(removeButton);
+    fileListContainer.appendChild(fileItem);
+}
+
+// 파일 제거
+function removeFile(file) {
+    selectedFiles = selectedFiles.filter((f) => f !== file);
+}
+
+// 첨부 파일 상태 업데이트
+function updateUploadInfo() {
+    uploadInfo.textContent = `${selectedFiles.length}/${maxFiles} 파일 첨부`;
+}
+</script>
