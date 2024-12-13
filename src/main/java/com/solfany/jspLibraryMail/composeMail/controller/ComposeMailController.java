@@ -1,5 +1,8 @@
 package com.solfany.jspLibraryMail.composeMail.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,59 +16,67 @@ import io.swagger.annotations.ApiOperation;
 @Api(tags = "Mail API") // API 그룹명
 public class ComposeMailController {
 
-  /**
-   * 메일 작성 페이지로 이동합니다.
-   * 
-   * @return composeMail.jsp 페이지
-   */
-  @ApiOperation(value = "메일 작성 페이지", notes = "메일 작성 화면으로 이동합니다.")
-  @GetMapping("/")
-  public String composeMailPage() {
-    return "composeMail";
-  }
+	/**
+	 * 메일 작성 페이지로 이동합니다.
+	 * 
+	 * @return composeMail.jsp 페이지
+	 */
+	@GetMapping("/")
+	@ApiOperation(value = "메일 작성 페이지", notes = "메일 작성 화면으로 이동합니다.")
+	public String composeMailPage() {
+		return "composeMail";
+	}
 
-  /**
-   * 메일 발송 API
-   * 
-   * @param emailAddress 받는 사람 이메일 주소
-   * @param referenceEmailAddress 참조 이메일 주소 (옵션)
-   * @param emailTitle 메일 제목
-   * @param emailContent 메일 본문
-   * @param files 첨부 파일 배열 (옵션)
-   * @return 메일 발송 결과 메시지
-   */
-  @ApiOperation(value = "메일 발송", notes = "메일 발송 API를 호출합니다.")
-  @PostMapping(value = "/sendMail", consumes = "multipart/form-data")
-  public ResponseEntity<?> composeMailSend(@RequestParam("emailAddress") String emailAddress,
-      @RequestParam(value = "referenceEmailAddress", required = false) String referenceEmailAddress,
-      @RequestParam("emailTitle") String emailTitle,
-      @RequestParam("emailContent") String emailContent,
-      @RequestParam(value = "files", required = false) MultipartFile[] files) {
-    try {
-      // 로그 출력
-      System.out.println("받는 사람: " + emailAddress);
-      System.out.println("참조 메일: " + referenceEmailAddress);
-      System.out.println("메일 제목: " + emailTitle);
-      System.out.println("메일 본문: " + emailContent);
+	/**
+	 * 메일 발송 API
+	 * 
+	 * @param emailAddress          받는 사람 이메일 주소
+	 * @param referenceEmailAddress 참조 이메일 주소 (옵션)
+	 * @param emailTitle            메일 제목
+	 * @param emailContent          메일 본문
+	 * @param files                 첨부 파일 배열 (옵션)
+	 * @return 메일 발송 결과 메시지
+	 */
+	@PostMapping("/sendMail")
+	@ApiOperation(value = "메일 발송", notes = "메일 발송 API를 호출합니다.")
+	public ResponseEntity<Map<String, Object>> composeMailSend(
+			@RequestParam("emailAddress") String emailAddress,
+			@RequestParam("emailTitle") String emailTitle, 
+			@RequestParam("emailContent") String emailContent,
+			@RequestParam(value = "referenceEmailAddress", required = false) String referenceEmailAddress,
+			@RequestParam(value = "files", required = false) MultipartFile[] files) {
+		try {
+			// 로그 출력
+			System.out.println("받는 사람: " + emailAddress);
+			System.out.println("참조 메일: " + referenceEmailAddress);
+			System.out.println("메일 제목: " + emailTitle);
+			System.out.println("메일 본문: " + emailContent);
 
-      // 첨부파일 처리
-      if (files != null && files.length > 0) {
-        for (MultipartFile file : files) {
-          System.out.println("첨부 파일: " + file.getOriginalFilename());
-        }
-      } else {
-        System.out.println("첨부 파일 없음");
-      }
+			// 첨부파일 처리
+			if (files != null && files.length > 0) {
+				for (MultipartFile file : files) {
+					System.out.println("첨부 파일: " + file.getOriginalFilename());
+				}
+			} else {
+				System.out.println("첨부 파일 없음");
+			}
+			
+			//TODO 메일 발송 서버 로직 연결 필요
+			
+			// 성공 응답
+			Map<String, Object> response = new HashMap<>();
+			response.put("status", "success");
+			response.put("message", "메일이 성공적으로 발송되었습니다.");
+			return ResponseEntity.ok(response);
 
-      // TODO: 메일 발송 로직 추가
-      // composeMailService.sendMail(emailAddress, referenceEmailAddress, emailTitle, emailContent,
-      // files);
+		} catch (Exception e) {
+			e.printStackTrace();
 
-      return ResponseEntity.ok("메일 발송 성공");
-    } catch (Exception e) {
-      // 에러 로그 출력
-      e.printStackTrace();
-      return ResponseEntity.status(500).body("메일 발송 실패: " + e.getMessage());
-    }
-  }
+			// 오류 응답
+			Map<String, Object> response = new HashMap<>();
+			response.put("status", "error");
+			response.put("message", "메일 발송 중 오류 발생: " + e.getMessage());
+			return ResponseEntity.status(500).body(response);
+		}
+	}
 }
